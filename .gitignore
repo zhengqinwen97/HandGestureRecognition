@@ -1,0 +1,15 @@
+# pic
+*.jpg
+
+# model
+*.data*
+*.index
+*.meta
+
+# Python:
+*.py[cod]
+*.so
+*.egg
+*.egg-info
+dist
+build
