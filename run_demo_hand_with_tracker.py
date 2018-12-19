@@ -8,6 +8,9 @@ import numpy as np
 import tensorflow as tf
 from config import FLAGS
 from utils import cpm_utils, tracking_module, utils
+from skimage import io,transform
+
+from predictcontinuous import PredictContinuons
 
 cpm_model = importlib.import_module('models.nets.' + FLAGS.network_def)
 
@@ -107,7 +110,7 @@ def main(argv):
 
         elif FLAGS.DEMO_TYPE in ['SINGLE', 'MULTI']:
             i = 0
-            flag = False
+            flag_stop_generate_img = False
             while True:
                 # Prepare input image
                 _, full_img = cam.read()
@@ -128,31 +131,28 @@ def main(argv):
 
                 local_img = visualize_result(full_img, stage_heatmap_np, kalman_filter_array, tracker, crop_full_scale,
                                              test_img_copy)
-                local_img = cv2.flip(local_img, 1)
-                cv2.imshow('local_img', local_img.astype(np.uint8))  # 训练用图
-                
-                # if cv2.waitKey(1) == ord('s'):
-                #     cv2.imwrite('./storePic/palm'+str(i)+'.jpg', local_img.astype(np.uint8), [int(cv2.IMWRITE_JPEG_QUALITY), 90])
-                
-                
-                
-                full_img = cv2.flip(full_img, 1)
+                local_img = cv2.flip(local_img, 1).astype(np.uint8)
 
+                # pred = PredictContinuons(local_img)
+                # tempclass = pred.predictpic()
+                # print(tempclass)
+                cv2.imshow('local_img', local_img.astype(np.uint8))  # 训练用图
+                                                
+                full_img = cv2.flip(full_img, 1)
                 font=cv2.FONT_HERSHEY_SIMPLEX  # 使用默认字体
                 full_img=cv2.putText(full_img, str(i),(0,40),font,1.2,(255,255,255),2)  # 添加文字，1.2表示字体大小，（0,40）是初始的位置，(255,255,255)表示颜色，2表示粗细
 
                 cv2.imshow('globalq_img', full_img.astype(np.uint8))  # 单人大框
 
-                # if cv2.waitKey(1) == ord('q'): break
 
                 k = cv2.waitKey(1)
                 if k == ord('q') or i > 600:
                     print("data load success!!")
                     break
                 elif k == ord('s'):
-                    flag = not flag
+                    flag_stop_generate_img = not flag_stop_generate_img
 
-                if flag:
+                if flag_stop_generate_img:
                     cv2.imwrite('./storePic/fist/'+str(i)+'.jpg', local_img.astype(np.uint8), [int(cv2.IMWRITE_JPEG_QUALITY), 90])
                     i += 1
 

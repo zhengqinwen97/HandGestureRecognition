@@ -7,12 +7,11 @@ path1 = "./storePic/palm1.jpg"
 path2 = "./storePic/fist.jpg"
 path3 = "./storePic/palm2.jpg"
 
-dict = {0:'palm1', 1:'fist', 2:'palm2'}
+dict = {0:'fist', 1:'palm1', 2:'palm2'}
 
 w=100
 h=100
 c=3
-
 
 def read_one_image(path):
     img = io.imread(path)
@@ -26,8 +25,8 @@ with tf.Session() as sess:
     data3 = read_one_image(path3)
 
     data.append(data1)
-    data.append(data2)
-    data.append(data3)
+    # data.append(data2)
+    # data.append(data3)
 
     saver = tf.train.import_meta_graph('./classify/modelSave/model.ckpt.meta')
     saver.restore(sess,tf.train.latest_checkpoint('./classify/modelSave/'))
@@ -48,4 +47,4 @@ with tf.Session() as sess:
     output = []
     output = tf.argmax(classification_result, 1).eval()
     for i in range(len(output)):
-        print("第",i+1,"个手势预测:"+dict[output[i]])
+        print("第", i+1, "个手势预测:"+dict[output[i]])
