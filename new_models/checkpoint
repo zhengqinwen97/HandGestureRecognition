@@ -1,0 +1,2 @@
+model_checkpoint_path: "D:\\Code\\Graduation_Project\\Gesture_detection_and_classify\\new_models\\GestureRecogModel.tfl"
+all_model_checkpoint_paths: "D:\\Code\\Graduation_Project\\Gesture_detection_and_classify\\new_models\\GestureRecogModel.tfl"

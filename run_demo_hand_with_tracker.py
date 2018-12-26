@@ -10,7 +10,17 @@ from config import FLAGS
 from utils import cpm_utils, tracking_module, utils
 from skimage import io,transform
 
-from predictcontinuous import PredictContinuons
+# import tflearn
+# from tflearn.layers.conv import conv_2d,max_pool_2d
+# from tflearn.layers.core import input_data,dropout,fully_connected
+# from tflearn.layers.estimator import regression
+# from sklearn.utils import shuffle
+
+# from load_new_model import load_my_model 
+
+# from predictcontinuous import PredictContinuons
+
+from tensorflow.python import pywrap_tensorflow
 
 cpm_model = importlib.import_module('models.nets.' + FLAGS.network_def)
 
@@ -137,7 +147,22 @@ def main(argv):
                 # tempclass = pred.predictpic()
                 # print(tempclass)
                 cv2.imshow('local_img', local_img.astype(np.uint8))  # 训练用图
-                                                
+
+                # if gl.get_value('signal') == 0:
+                    # gl.set_value('signal', 1)
+                # cv2.imwrite('./Tmp.jpg', local_img.astype(np.uint8))
+                    # gl.set_value('signal', 0)
+
+                pathdir = r"D:\Code\Graduation_Project\Gesture_detection_and_classify\001"
+                if not os.path.exists(pathdir):
+                    try :
+                        os.mkdir(pathdir)
+                        cv2.imwrite('./Tmp.jpg', local_img.astype(np.uint8))
+                        print("write local img")
+                        os.removedirs(pathdir)
+                    except FileExistsError:
+                        pass
+
                 full_img = cv2.flip(full_img, 1)
                 font=cv2.FONT_HERSHEY_SIMPLEX  # 使用默认字体
                 full_img=cv2.putText(full_img, str(i),(0,40),font,1.2,(255,255,255),2)  # 添加文字，1.2表示字体大小，（0,40）是初始的位置，(255,255,255)表示颜色，2表示粗细
