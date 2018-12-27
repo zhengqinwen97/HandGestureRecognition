@@ -22,7 +22,7 @@ if os.path.exists(pathdir):
 #%%
 mydic = {0 : 'palm1', 1 : 'palm2', 2 : 'fist'}
 while True:
-    time.sleep(0.05)
+    time.sleep(0.08)
     if not os.path.exists(pathdir):  
         try:
             os.mkdir(pathdir)
