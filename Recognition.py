@@ -10,6 +10,7 @@ from PIL import Image
 from RecognitionLoadModel import load_my_model 
 import time
 import os
+
 #%%
 model = load_my_model(model_path = r"D:\Code\Graduation_Project\Gesture_detection_and_classify\new_models\GestureRecogModel.tfl")
 
@@ -21,7 +22,7 @@ if os.path.exists(pathdir):
 #%%
 mydic = {0 : 'palm1', 1 : 'palm2', 2 : 'fist'}
 while True:
-    # time.sleep(0.1)
+    time.sleep(0.05)
     if not os.path.exists(pathdir):  
         try:
             os.mkdir(pathdir)
@@ -40,6 +41,7 @@ while True:
             # print("show local img")
             os.removedirs(pathdir)
         except FileExistsError:
+            print("ERROR-------------------------------------------------->")
             pass             
     k = cv2.waitKey(1)
     if k == ord('q'):

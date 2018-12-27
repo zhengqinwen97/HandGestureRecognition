@@ -10,22 +10,9 @@ from config import FLAGS
 from utils import cpm_utils, tracking_module, utils
 from skimage import io,transform
 
-# import tflearn
-# from tflearn.layers.conv import conv_2d,max_pool_2d
-# from tflearn.layers.core import input_data,dropout,fully_connected
-# from tflearn.layers.estimator import regression
-# from sklearn.utils import shuffle
-
-# from load_new_model import load_my_model 
-
-# from predictcontinuous import PredictContinuons
-
-from tensorflow.python import pywrap_tensorflow
-
 cpm_model = importlib.import_module('models.nets.' + FLAGS.network_def)
 
 joint_detections = np.zeros(shape=(21, 2))
-
 
 def main(argv):
     global joint_detections
@@ -142,17 +129,9 @@ def main(argv):
                 local_img = visualize_result(full_img, stage_heatmap_np, kalman_filter_array, tracker, crop_full_scale,
                                              test_img_copy)
                 local_img = cv2.flip(local_img, 1).astype(np.uint8)
-
-                # pred = PredictContinuons(local_img)
-                # tempclass = pred.predictpic()
-                # print(tempclass)
                 cv2.imshow('local_img', local_img.astype(np.uint8))  # 训练用图
-
-                # if gl.get_value('signal') == 0:
-                    # gl.set_value('signal', 1)
-                # cv2.imwrite('./Tmp.jpg', local_img.astype(np.uint8))
-                    # gl.set_value('signal', 0)
-
+   
+                # write image
                 pathdir = r"D:\Code\Graduation_Project\Gesture_detection_and_classify\001"
                 if not os.path.exists(pathdir):
                     try :
@@ -161,6 +140,7 @@ def main(argv):
                         print("write local img")
                         os.removedirs(pathdir)
                     except FileExistsError:
+                        print("ERROR-------------------------------------------------->")
                         pass
 
                 full_img = cv2.flip(full_img, 1)
