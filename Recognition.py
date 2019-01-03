@@ -1,5 +1,7 @@
 #%%
+import os
 import cv2
+os.environ["CUDA_VISIBLE_DEVICES"]="-1" # 禁用GPU 否则报错
 import tensorflow as tf
 import tflearn
 from tflearn.layers.conv import conv_2d,max_pool_2d
@@ -9,7 +11,7 @@ import numpy as np
 from PIL import Image
 from RecognitionLoadModel import load_my_model 
 import time
-import os
+
 
 #%%
 model = load_my_model(model_path = r"D:\Code\Graduation_Project\Gesture_detection_and_classify\new_models\GestureRecogModel.tfl")
