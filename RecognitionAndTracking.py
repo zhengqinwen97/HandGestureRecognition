@@ -5,7 +5,7 @@ import time
 # recognition
 def run_proc1(name):
     print('Run child process %s (%s)...' % (name, os.getpid()))
-    os.system(r"D:\Anaconda\envs\tensorflow\python.exe D:\Code\Graduation_Project\Gesture_detection_and_classify\Recognition.py")
+    os.system(r"D:\Anaconda\envs\tensorflow_gpu\python.exe D:\Code\Graduation_Project\Gesture_detection_and_classify\Recognition.py")
 
 # tracking
 def run_proc2(name):

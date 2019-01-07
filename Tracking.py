@@ -112,6 +112,9 @@ def main(argv):
                 # Prepare input image
                 _, full_img = cam.read()
 
+                # flip the camera stream
+                full_img = cv2.flip(full_img, 1)
+
                 test_img = tracker.tracking_by_joints(full_img, joint_detections=joint_detections)
                 crop_full_scale = tracker.input_crop_ratio
                 test_img_copy = test_img.copy()
@@ -128,7 +131,7 @@ def main(argv):
 
                 local_img = visualize_result(full_img, stage_heatmap_np, kalman_filter_array, tracker, crop_full_scale,
                                              test_img_copy)
-                local_img = cv2.flip(local_img, 1).astype(np.uint8)
+                # local_img = cv2.flip(local_img, 1).astype(np.uint8)
                 cv2.imshow('local_img', local_img.astype(np.uint8))  # 训练用图
    
                 # write image
@@ -143,7 +146,7 @@ def main(argv):
                         print("ERROR-------------------------------------------------->")
                         pass
 
-                full_img = cv2.flip(full_img, 1)
+                # full_img = cv2.flip(full_img, 1)
                 font=cv2.FONT_HERSHEY_SIMPLEX  # 使用默认字体
                 full_img=cv2.putText(full_img, str(i),(0,40),font,1.2,(255,255,255),2)  # 添加文字，1.2表示字体大小，（0,40）是初始的位置，(255,255,255)表示颜色，2表示粗细
 
