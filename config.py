@@ -13,6 +13,7 @@ class FLAGS(object):
     normalize_img = True
     use_gpu = True
     gpu_id = 0
+    udp_stream = False
 
 
     """

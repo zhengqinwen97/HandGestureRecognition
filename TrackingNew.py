@@ -1,14 +1,13 @@
-import importlib
-import math
-import os
-import time
-
-import cv2
-import numpy as np
 import tensorflow as tf
-from config import FLAGS
+import numpy as np
 from utils import cpm_utils, tracking_module, utils
-from skimage import io,transform
+import cv2
+import time
+import math
+import importlib
+import os
+
+from config import FLAGS
 
 import socket
 import sys
@@ -17,15 +16,8 @@ cpm_model = importlib.import_module('models.nets.' + FLAGS.network_def)
 
 joint_detections = np.zeros(shape=(21, 2))
 
+
 def main(argv):
-
-    if FLAGS.udp_stream:
-        # set UDP config
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        host = "192.168.1.114"
-        port = int(1080)
-        server_address = (host, port)
-
     global joint_detections
     os.environ['CUDA_VISIBLE_DEVICES'] = str(FLAGS.gpu_id)
 
@@ -117,26 +109,11 @@ def main(argv):
             cv2.waitKey(0)
 
         elif FLAGS.DEMO_TYPE in ['SINGLE', 'MULTI']:
-            i = 0
-            flag_stop_generate_img = False
             while True:
-
-                if not FLAGS.udp_stream:
-                    # Prepare input image, from camera
-                    _, full_img = cam.read()
-                else:
-                    # Prepare input image, from udp stream
-                    sent = sock.sendto("get".encode(), server_address)
-                    data, server = sock.recvfrom(65507)
-                    # print("Fragment size : {}".format(len(data)))
-                    if len(data) == 4:
-                        # This is a message error sent back by the server
-                        if(data == "FAIL"):
-                            continue
-                    array = np.frombuffer(data, dtype=np.dtype('uint8'))
-                    full_img = cv2.imdecode(array, 1)
-                    # sock.sendto("fis".encode(), server_address)
-
+                # # Prepare input image
+                _, full_img = cam.read()
+                # full_img = cv2.flip(full_img, 1)
+                
                 test_img = tracker.tracking_by_joints(full_img, joint_detections=joint_detections)
                 crop_full_scale = tracker.input_crop_ratio
                 test_img_copy = test_img.copy()
@@ -153,39 +130,10 @@ def main(argv):
 
                 local_img = visualize_result(full_img, stage_heatmap_np, kalman_filter_array, tracker, crop_full_scale,
                                              test_img_copy)
-                # local_img = cv2.flip(local_img, 1).astype(np.uint8)
-                cv2.imshow('local_img', local_img.astype(np.uint8))  # 训练用图
-   
-                # write image
-                pathdir = r"D:\Code\Graduation_Project\Gesture_detection_and_classify\001"
-                if not os.path.exists(pathdir):
-                    try :
-                        os.mkdir(pathdir)
-                        cv2.imwrite('./Tmp.jpg', local_img.astype(np.uint8))
-                        print("write local img")
-                        os.removedirs(pathdir)
-                    except FileExistsError:
-                        print("ERROR-------------------------------------------------->")
-                        pass
 
-                # full_img = cv2.flip(full_img, 1)
-                font=cv2.FONT_HERSHEY_SIMPLEX  # 使用默认字体
-                full_img=cv2.putText(full_img, str(i),(0,40),font,1.2,(255,255,255),2)  # 添加文字，1.2表示字体大小，（0,40）是初始的位置，(255,255,255)表示颜色，2表示粗细
-
-                cv2.imshow('globalq_img', full_img.astype(np.uint8))  # 单人大框
-
-
-                k = cv2.waitKey(1)
-                if k == ord('q') or i > 600:
-                    print("data load success!!")
-                    break
-                elif k == ord('s'):
-                    flag_stop_generate_img = not flag_stop_generate_img
-
-                if flag_stop_generate_img:
-                    cv2.imwrite('./storePic/fist/'+str(i)+'.jpg', local_img.astype(np.uint8), [int(cv2.IMWRITE_JPEG_QUALITY), 90])
-                    i += 1
-
+                cv2.imshow('local_img', local_img.astype(np.uint8))
+                cv2.imshow('global_img', full_img.astype(np.uint8))
+                if cv2.waitKey(1) == ord('q'): break
 
 
         elif FLAGS.DEMO_TYPE == 'Joint_HM':
@@ -333,11 +281,8 @@ def visualize_result(test_img, stage_heatmap_np, kalman_filter_array, tracker, c
             demo_img = np.concatenate((upper_img, lower_img), axis=0)
             return demo_img
         else:
-            # return np.concatenate((demo_stage_heatmaps[0], demo_stage_heatmaps[len(stage_heatmap_np) - 1], crop_img),
-            #                       axis=1)
-
-            return demo_stage_heatmaps[0]
-            # np.concatenate 合并array
+            return np.concatenate((demo_stage_heatmaps[0], demo_stage_heatmaps[len(stage_heatmap_np) - 1], crop_img),
+                                  axis=1)
 
     else:
         return crop_img

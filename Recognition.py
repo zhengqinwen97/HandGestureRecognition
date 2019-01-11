@@ -11,17 +11,18 @@ import numpy as np
 from PIL import Image
 from RecognitionLoadModel import load_my_model 
 import time
+from TcpWithVM import Tcp
 
+# init my tcp connect with vm
+mytcp = Tcp()
+mytcp.connect()
 
-#%%
 model = load_my_model(model_path = r"D:\Code\Graduation_Project\Gesture_detection_and_classify\new_models\GestureRecogModel.tfl")
-
 pathdir = r"D:\Code\Graduation_Project\Gesture_detection_and_classify\001"
 
 if os.path.exists(pathdir):
     os.removedirs(pathdir)
 
-#%%
 mydic = {0 : 'palm1', 1 : 'palm2', 2 : 'fist'}
 while True:
     time.sleep(0.08)
@@ -34,6 +35,9 @@ while True:
             prediction = model.predict([gray_image.reshape(256, 256, 1)])
             predict_indx = np.argmax(prediction)
             print(mydic[predict_indx])
+
+            # send result to tcp connect
+            mytcp.sendmessa(mydic[predict_indx])
 
             # show tsxt in the image
             font=cv2.FONT_HERSHEY_SIMPLEX
