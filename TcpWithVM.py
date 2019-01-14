@@ -1,8 +1,12 @@
 import  socket
 import time
+from myutils import MYCONFIG
+
+# tcp host ip
+hostip = MYCONFIG.tcpip
 
 class Tcp:
-    def __init__(self, host_ip = "192.168.136.137", host_port = 8123):
+    def __init__(self, host_ip = hostip, host_port = 8123):
         self._host_ip = host_ip
         self._host_port = host_port
         self._mylist = ['palm1', 'palm2', 'fist']

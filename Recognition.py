@@ -1,8 +1,5 @@
-#%%
 import os
 import cv2
-os.environ["CUDA_VISIBLE_DEVICES"]="-1" # 禁用GPU 否则报错
-import tensorflow as tf
 import tflearn
 from tflearn.layers.conv import conv_2d,max_pool_2d
 from tflearn.layers.core import input_data,dropout,fully_connected
@@ -12,10 +9,14 @@ from PIL import Image
 from RecognitionLoadModel import load_my_model 
 import time
 from TcpWithVM import Tcp
+from myutils import MYCONFIG
 
-# init my tcp connect with vm
-mytcp = Tcp()
-mytcp.connect()
+os.environ["CUDA_VISIBLE_DEVICES"]="-1" # 禁用GPU 否则报错
+import tensorflow as tf
+if MYCONFIG.tcp2vm:
+    # init my tcp connect with vm
+    mytcp = Tcp()
+    mytcp.connect()
 
 model = load_my_model(model_path = r"D:\Code\Graduation_Project\Gesture_detection_and_classify\new_models\GestureRecogModel.tfl")
 pathdir = r"D:\Code\Graduation_Project\Gesture_detection_and_classify\001"
@@ -35,9 +36,9 @@ while True:
             prediction = model.predict([gray_image.reshape(256, 256, 1)])
             predict_indx = np.argmax(prediction)
             print(mydic[predict_indx])
-
-            # send result to tcp connect
-            mytcp.sendmessa(mydic[predict_indx])
+            if MYCONFIG.tcp2vm:
+                # send result to tcp connect
+                mytcp.sendmessa(mydic[predict_indx])
 
             # show tsxt in the image
             font=cv2.FONT_HERSHEY_SIMPLEX

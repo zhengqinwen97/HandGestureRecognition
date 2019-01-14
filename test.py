@@ -1,8 +1,3 @@
-from TcpWithVM import Tcp
+from myutils import MYCONFIG
 
-mytcp = Tcp()
-mytcp.connect()
-mytcp.sendmessa("palm1")
-mytcp.sendmessa("palm2")
-mytcp.sendmessa("fist")
-mytcp.disconnect()
+print(MYCONFIG.tcp2vm)
